@@ -1,0 +1,4 @@
+name: Test_plugin
+version: ${project.version}
+main: cc.updater.mc.test_plugin.Test_plugin
+api-version: 1.16
