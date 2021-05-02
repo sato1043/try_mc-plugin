@@ -1,0 +1,20 @@
+#========================================
+# ${project.name} ${project.version}
+#   - config.yml
+#========================================
+
+# some boolean value
+youAreAwesome: true
+
+# and a string value
+message: Hello World and Welcome! :)
+
+# and list of string
+team:
+  rules:
+    - Play Nice
+    - Respect others
+    - Have Fun
+    - Dont swear
+
+#__END__

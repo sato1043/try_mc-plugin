@@ -1,4 +1,4 @@
-name: Test_plugin
+name: TestPlugin
 version: ${project.version}
-main: cc.updater.mc.test_plugin.Test_plugin
+main: cc.updater.mc.TestPlugin.TestPlugin
 api-version: 1.16
