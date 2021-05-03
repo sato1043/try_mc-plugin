@@ -5,7 +5,7 @@ README_development
 
 サーバ；
 - Java 11
-- Paper-spigot 1.16.5
+- Spigot 1.16.5
   
   リモートに paper-spigot が動いている前提。
   spigotは当面は素の状態。 jar を DL して起動、eula=trueしたのみ。
@@ -14,6 +14,7 @@ README_development
 - Java 11
 - IntelliJ IDEA
 - macOS catalina
+- nginx (APIの模擬用)
 
 
 ### Java11 の導入
@@ -117,11 +118,18 @@ Run configuration を edit して、 Remote JVM Debug を追加する。
 ### プロファイルごと設定
 
 pom.xml に定義したプロファイルは product / staging / testing の３種。必要に応じて適宜追加。
+
 プロジェクト直下に cp .example-profile.properties .testing.properties し、.testing.properties を各自の設定に変更する。
+
 IDE でデバッグセッションを開始。その後 mvn deploy 。サーバが起動した際にデバッグセッションに繋いでくる。
+
 mvn deploy でサーバにプラグインがデプロイされると、サーバの再起動コマンドがSSHで発行される。自分はサーバが再起動するようにしている。あるいはデバッグセッションが有効かつサーバ起動処理に手を入れていなかったなら IDEのビルドコマンドでjavaクラスがリロードされる。
+
 適当な箇所にブレークを貼って、実行・停止・再実行できることを確認する。
 
+***
+
+spigot.mc へのプラグイン更新を模擬するために、環境ごとの properties に updateChecker.url を設定する。このURLはバージョン番号文字列を単純に返答すれば良い。具体的には「1.0.0」とだけ書かれたテキストファイルを nginx などHTTPサーバで配信するようにしておく。
 
 
 

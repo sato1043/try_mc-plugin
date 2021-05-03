@@ -3,8 +3,8 @@
 #   - config.yml
 #========================================
 
-# some boolean value
-youAreAwesome: true
+# whether check update or not
+checkUpdate: true
 
 # and a string value
 message: Hello World and Welcome! :)

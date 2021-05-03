@@ -1,38 +1,48 @@
 package cc.updater.mc.TestPlugin;
 
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.logging.Logger;
+import java.io.IOException;
 
 public final class TestPlugin extends JavaPlugin implements Listener {
-    FileConfiguration config = getConfig();
 
     @Override
     public void onEnable() {
-        Logger logger = getLogger();
 
         // Plugin startup logic
 
         saveDefaultConfig();
 
-        var welcome = config.getString("message");
+        checkUpdate();
+
+        var welcome = getConfig().getString("message");
         if (welcome != null) {
-            logger.info(welcome);
+            getLogger().info(welcome);
         }
-        if (config.getBoolean("youAreAwesome")) {
-            logger.info("You are awesome!");
-        }
-        var rules = config.getStringList("team.rules");
-        for (var s : rules){
-            logger.info(s);
+        var rules = getConfig().getStringList("team.rules");
+        for (var s : rules) {
+            getLogger().info(s);
         }
 
         getServer().getPluginManager().registerEvents(this, this);
+    }
+
+    private void checkUpdate() {
+        if (!getConfig().getBoolean("checkUpdate")) return;
+
+        try {
+            new UpdateChecker(this).getVersion(version -> {
+                if (!this.getDescription().getVersion().equalsIgnoreCase(version)) {
+                    getLogger().info("There is a new update available.");
+                }
+            });
+        } catch (IOException | AssertionError exception) {
+            getLogger().info("Cannot look for updates: " + exception.getMessage());
+        }
     }
 
     @Override
@@ -46,15 +56,12 @@ public final class TestPlugin extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        var welcome = config.getString("message");
+        var welcome = getConfig().getString("message");
         if (welcome != null) {
             player.sendMessage(welcome);
         }
-        if (config.getBoolean("youAreAwesome")) {
-            player.sendMessage("You are awesome!");
-        }
-        var rules = config.getStringList("team.rules");
-        for (var s : rules){
+        var rules = getConfig().getStringList("team.rules");
+        for (var s : rules) {
             player.sendMessage(s);
         }
     }
