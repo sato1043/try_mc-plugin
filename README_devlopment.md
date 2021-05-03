@@ -144,6 +144,44 @@ Plugin Snippets
 - https://www.spigotmc.org/wiki/plugin-snippets/
 
 
+### オフライン(ローカル)の Spigot API javadoc
+
+- まず BuildTool で spigot-x.xx.jar をビルドする。その後、Spigot-API/src の下で javadoc を mvn により生成する。
+  - https://hub.spigotmc.org/jenkins/job/BuildTools/
+  - https://www.spigotmc.org/wiki/buildtools/#1-16-5
+
+```
+$ java -jar BuildTools.jar --rev 1.16.5
+ :
+ (take some time...)
+ :
+ 
+$ ls
+BuildData          BuildTools.log.txt CraftBukkit        apache-maven-3.6.0 work
+BuildTools.jar     Bukkit             Spigot             spigot-1.16.5.jar
+
+$ cd Spigot/Spigot-API
+
+$ rm -rf src/main/javadoc/*
+   # empty stubs
+
+$ chmod +x  ../../apache-maven-3.6.0/bin/mvn
+
+$ ../../apache-maven-3.6.0/bin/mvn javadoc:javadoc
+
+$ $ ls target/site/apidocs
+allclasses-index.html    help-doc.html            org                      script.js
+allclasses.html          index-all.html           overview-summary.html    search.js
+allpackages-index.html   index.html               overview-tree.html       serialized-form.html
+constant-values.html     jquery                   package-search-index.js  stylesheet.css
+deprecated-list.html     member-search-index.js   package-search-index.zip type-search-index.js
+element-list             member-search-index.zip  resources                type-search-index.zip
+
+```
+
+- 生成した apidocs は使いやすい場所に移動しておけば良い。例えばテスト用の nginx 下など。
+
+
 ## commit
 
 ### commit log
