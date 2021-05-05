@@ -1,5 +1,6 @@
 package cc.updater.mc.TestPlugin;
 
+import lombok.SneakyThrows;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,25 +11,28 @@ import java.io.IOException;
 
 public final class TestPlugin extends JavaPlugin implements Listener {
 
+    @SneakyThrows
     @Override
     public void onEnable() {
 
         // Plugin startup logic
 
-        saveDefaultConfig();
+        try {
 
-        checkUpdate();
+            saveDefaultConfig();
 
-        var welcome = getConfig().getString("message");
-        if (welcome != null) {
-            getLogger().info(welcome);
+            checkUpdate();
+
+            validateConfig();
+
+            getServer().getPluginManager().registerEvents(this, this);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            getLogger().info("Cannot enable plugin: " + exception.getMessage());
+            setEnabled(false);
+            throw exception;
         }
-        var rules = getConfig().getStringList("team.rules");
-        for (var s : rules) {
-            getLogger().info(s);
-        }
-
-        getServer().getPluginManager().registerEvents(this, this);
     }
 
     private void checkUpdate() {
@@ -43,6 +47,14 @@ public final class TestPlugin extends JavaPlugin implements Listener {
         } catch (IOException | AssertionError exception) {
             getLogger().info("Cannot look for updates: " + exception.getMessage());
         }
+    }
+
+    private void validateConfig() throws AssertionError, IOException {
+        var welcome = getConfig().getString("message");
+        assert welcome != null;
+
+        var rules = getConfig().getStringList("team.rules");
+        assert rules != null;
     }
 
     @Override

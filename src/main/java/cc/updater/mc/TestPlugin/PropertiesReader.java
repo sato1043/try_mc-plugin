@@ -8,11 +8,13 @@ import java.util.Properties;
 
 public class PropertiesReader {
 
-    public static final String PLUGIN_CONSTANTS_PROPERTIES = "plugin-constants.properties";
+    private static final String PLUGIN_CONSTANTS_PROPERTIES = "plugin-constants.properties";
+
+    private static final String UPDATE_CHECKER_URL_KEY = "updateChecker.url";
 
     private static PropertiesReader pluginConstantsPropertiesReader;
 
-    public static PropertiesReader getPluginConstantsPropertiesReader() throws IOException, AssertionError {
+    private static PropertiesReader getPluginConstantsPropertiesReader() throws IOException, AssertionError {
         if (pluginConstantsPropertiesReader == null) {
             var reader = new PropertiesReader(PLUGIN_CONSTANTS_PROPERTIES);
             assert reader != null;
@@ -21,13 +23,14 @@ public class PropertiesReader {
         return pluginConstantsPropertiesReader;
     }
 
-    public static final String UPDATE_CHECKER_URL_KEY = "updateChecker.url";
+    private static String getString(String key) throws IOException, AssertionError {
+        var s = PropertiesReader.getPluginConstantsPropertiesReader().getProperty(key);
+        assert s != null;
+        return s;
+    }
 
     public static String getUpdateCheckerUrl() throws IOException, AssertionError {
-        var reader = PropertiesReader.getPluginConstantsPropertiesReader();
-        var urlString = reader.getProperty(UPDATE_CHECKER_URL_KEY);
-        assert urlString != null;
-        return urlString;
+        return PropertiesReader.getString(UPDATE_CHECKER_URL_KEY);
     }
 
     //
@@ -38,8 +41,8 @@ public class PropertiesReader {
 
     private PropertiesReader(String propertyFileName) throws IOException, AssertionError {
         var is = getClass().getClassLoader().getResourceAsStream(propertyFileName);
-        var properties = new Properties();
         assert is != null;
+        var properties = new Properties();
         assert properties != null;
         properties.load(is);
 
