@@ -1,17 +1,28 @@
 package cc.updater.mc.TestPlugin;
 
-import lombok.SneakyThrows;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 
 public final class TestPlugin extends JavaPlugin implements Listener {
 
-    @SneakyThrows
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private static TestPlugin instance = null;
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private StorageReader storage = null;
+
     @Override
     public void onEnable() {
 
@@ -19,23 +30,30 @@ public final class TestPlugin extends JavaPlugin implements Listener {
 
         try {
 
+            assert getInstance() == null;
+
+            setInstance(this);
+
             saveDefaultConfig();
 
             checkUpdate();
 
             validateConfig();
 
+            setStorage(StorageReader.createStorage(this));
+
             getServer().getPluginManager().registerEvents(this, this);
+
+            getLogger().info("plugin is enabled ");
 
         } catch (Exception exception) {
             exception.printStackTrace();
             getLogger().info("Cannot enable plugin: " + exception.getMessage());
             setEnabled(false);
-            throw exception;
         }
     }
 
-    private void checkUpdate() {
+    private void checkUpdate() throws IOException, AssertionError {
         if (!getConfig().getBoolean("checkUpdate")) return;
 
         try {
@@ -46,6 +64,7 @@ public final class TestPlugin extends JavaPlugin implements Listener {
             });
         } catch (IOException | AssertionError exception) {
             getLogger().info("Cannot look for updates: " + exception.getMessage());
+            throw exception;
         }
     }
 
@@ -59,8 +78,14 @@ public final class TestPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+
         // Plugin shutdown logic
-        getLogger().info("onDisable is called!");
+
+        HandlerList.unregisterAll((Plugin) this);
+
+        setInstance(null);
+
+        getLogger().info("plugin is disabled.");
     }
 
     // This method checks for incoming players and sends them a message

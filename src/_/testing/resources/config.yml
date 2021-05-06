@@ -17,4 +17,15 @@ team:
     - Have Fun
     - Dont swear
 
+storage:
+  type: ${storage.type}
+  mysql:
+    host: ${storage.mysql.host}
+    port: ${storage.mysql.port}
+    user: ${storage.mysql.user}
+    password: ${storage.mysql.password}
+    db_name: ${storage.mysql.db_name}
+    max_conns: ${storage.mysql.max_conns}
+    use_ssl: ${storage.mysql.use_ssl}
+
 #__END__

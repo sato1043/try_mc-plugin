@@ -6,6 +6,7 @@ README_development
 サーバ；
 - Java 11
 - Spigot 1.16.5
+- MySQL 8
   
   リモートに paper-spigot が動いている前提。
   spigotは当面は素の状態。 jar を DL して起動、eula=trueしたのみ。
@@ -121,15 +122,41 @@ pom.xml に定義したプロファイルは product / staging / testing の３�
 
 プロジェクト直下に cp .example-profile.properties .testing.properties し、.testing.properties を各自の設定に変更する。
 
+```
+$ cp .example-profile.properties .testing.properties
+$ chmod 600 .testing.properties
+$ vi .testing.properties
+```
+
+***
+
+spigot.mc へのプラグイン更新を模擬するために、環境ごとの properties に updateChecker.url を設定する。このURLはバージョン番号文字列を単純に返答すれば良い。具体的には「1.0.0」とだけ書かれたテキストファイルを nginx などHTTPサーバで配信するようにしておく。
+
+環境毎の properties に MySQL への接続情報を記述する。
+
+環境毎の properties ファイルのパーミッションに注意。
+
+
+### MySQLデータベース作成
+
+src/scripts ディレクトリにデータベースの準備をするためのスクリプトがある。実行すると SQLを出力するので、mysql コマンドに入力する。
+もしくはターミナルに画面表示させてからテキストをコピーし、mysql に入力してもよいかもしれない。パスワード漏洩には注意。
+
+```
+$ cd src/scripts
+$ ./CREATE_USER.sh testing | sudo mysql
+$ ./CREATE_DATABASE.sh testing | sudo mysql
+```
+
+
+### デバッグの動作確認
+
 IDE でデバッグセッションを開始。その後 mvn deploy 。サーバが起動した際にデバッグセッションに繋いでくる。
 
 mvn deploy でサーバにプラグインがデプロイされると、サーバの再起動コマンドがSSHで発行される。自分はサーバが再起動するようにしている。あるいはデバッグセッションが有効かつサーバ起動処理に手を入れていなかったなら IDEのビルドコマンドでjavaクラスがリロードされる。
 
 適当な箇所にブレークを貼って、実行・停止・再実行できることを確認する。
 
-***
-
-spigot.mc へのプラグイン更新を模擬するために、環境ごとの properties に updateChecker.url を設定する。このURLはバージョン番号文字列を単純に返答すれば良い。具体的には「1.0.0」とだけ書かれたテキストファイルを nginx などHTTPサーバで配信するようにしておく。
 
 
 

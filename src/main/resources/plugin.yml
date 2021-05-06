@@ -1,4 +1,9 @@
-name: TestPlugin
+name: "${project.name}"
 version: ${project.version}
-main: cc.updater.mc.TestPlugin.TestPlugin
-api-version: 1.16
+main: "${project.main}"
+api-version: ${project.api.version}
+author: "${project.author}"
+website: "${project.url}"
+description: "${project.description}"
+depend: [${dependencies}]
+softdepend: [${soft-dependencies}]

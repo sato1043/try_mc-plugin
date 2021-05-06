@@ -10,12 +10,20 @@
     <packaging>jar</packaging>
 
     <name>TestPlugin</name>
+    <description>TestPlugin</description>
+    <url>https://github.com/sato1043/try_mc-plugin</url>
 
     <properties>
         <java.version>11</java.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <project.author>sato1043</project.author>
+        <project.api.version>1.16</project.api.version>
+        <project.main>${project.groupId}.${project.artifactId}.${project.artifactId}</project.main>
+        <dependencies></dependencies>
+        <soft-dependencies></soft-dependencies>
 
         <deploy.local.jarfile>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</deploy.local.jarfile>
     </properties>
@@ -110,6 +118,7 @@
                 <version>1.0.0</version>
                 <executions>
                     <execution>
+                        <id>import-profile-properties</id>
                         <phase>initialize</phase>
                         <goals>
                             <goal>read-project-properties</goal>
@@ -119,6 +128,47 @@
                                 <file>.${build.profile.id}.properties</file>
                             </files>
                         </configuration>
+                    </execution>
+                    <execution>
+                        <id>export-project-properties</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>write-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <outputFile>${project.build.directory}/exported-project.properties</outputFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- http://anthonywhitford.com/lombok.maven/lombok-maven-plugin/ -->
+            <!-- plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+                <version>1.18.20.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>delombok</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <includeScope>compile</includeScope>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -134,6 +184,7 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <minimizeJar>true</minimizeJar>
                         </configuration>
                     </execution>
                 </executions>
@@ -200,6 +251,30 @@
     </repositories>
 
     <dependencies>
+
+        <!-- https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope -->
+
+        <!-- compile time depedencies -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>17.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.24</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>4.0.3</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- runtime dependencies -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
