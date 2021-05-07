@@ -14,16 +14,33 @@ import java.sql.SQLException;
 
 public class StorageReader {
 
-    public enum StorageType { SQLITE, MYSQL };
-    @Getter @Setter(AccessLevel.PRIVATE) private StorageType type;
+    public enum StorageType {SQLITE, MYSQL}
 
-    @Getter @Setter(AccessLevel.PRIVATE) private String mysqlHost;
-    @Getter @Setter(AccessLevel.PRIVATE) private String mysqlPort;
-    @Getter @Setter(AccessLevel.PRIVATE) private String mysqlUser;
-    @Getter @Setter(AccessLevel.PRIVATE) private String mysqlPassword;
-    @Getter @Setter(AccessLevel.PRIVATE) private String mysqlDbName;
-    @Getter @Setter(AccessLevel.PRIVATE) private int mysqlMaxConns;
-    @Getter @Setter(AccessLevel.PRIVATE) private boolean mysqlUseSsl;
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private StorageType type;
+
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private String mysqlHost;
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private String mysqlPort;
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private String mysqlUser;
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private String mysqlPassword;
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private String mysqlDbName;
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private int mysqlMaxConns;
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private boolean mysqlUseSsl;
 
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
@@ -35,7 +52,7 @@ public class StorageReader {
 
 
     public static StorageReader createStorage(JavaPlugin plugin)
-            throws AssertionError, ClassNotFoundException, IOException {
+            throws AssertionError, ClassNotFoundException, IOException, SQLException {
         var type = plugin.getConfig().getString("storage.type");
         assert type != null && !type.isBlank();
         switch (type.trim().toLowerCase()) {
@@ -49,7 +66,7 @@ public class StorageReader {
     }
 
     public static StorageReader createStorageBySQLite(JavaPlugin plugin)
-            throws AssertionError, ClassNotFoundException, IOException {
+            throws AssertionError, ClassNotFoundException, IOException, SQLException {
 
         Class.forName("org.sqlite.JDBC");
 
@@ -75,7 +92,7 @@ public class StorageReader {
     }
 
     public static StorageReader createStorageByMySQL(JavaPlugin plugin)
-            throws AssertionError, ClassNotFoundException, IOException {
+            throws AssertionError, ClassNotFoundException, IOException, SQLException {
 
         Class.forName("com.mysql.jdbc");
 
@@ -134,9 +151,10 @@ public class StorageReader {
         return storage;
     }
 
-    private StorageReader() { }
+    private StorageReader() {
+    }
 
-    private void open() throws AssertionError, IOException {
+    private void open() throws AssertionError, IOException, SQLException {
 
         var config = getPoolConfig();
         config.setPoolName(PropertiesReader.getProjectName() + "-Connection-Pool");
@@ -148,24 +166,19 @@ public class StorageReader {
 
         setDataSource(new HikariDataSource(getPoolConfig()));
 
-        try
-        {
+        try {
             getConnection().close(); // test connection
-        }
-        catch(Exception e)
-        {
+        } catch (Exception exception) {
             close();
-            throw new IOException();
+            throw exception;
         }
     }
 
-    public void close()
-    {
+    public void close() {
         getDataSource().close();
     }
 
-    public Connection getConnection() throws SQLException
-    {
+    public Connection getConnection() throws SQLException {
         return getDataSource().getConnection();
     }
 

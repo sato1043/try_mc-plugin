@@ -25,9 +25,8 @@ public class PropertiesReader {
 
     private static PropertiesReader getPluginConstantsPropertiesReader() throws IOException, AssertionError {
         if (pluginConstantsPropertiesReader == null) {
-            var reader = new PropertiesReader(PLUGIN_CONSTANTS_PROPERTIES);
-            assert reader != null;
-            pluginConstantsPropertiesReader = reader;
+            pluginConstantsPropertiesReader = new PropertiesReader(PLUGIN_CONSTANTS_PROPERTIES);
+            assert pluginConstantsPropertiesReader != null;
         }
         return pluginConstantsPropertiesReader;
     }
@@ -41,18 +40,23 @@ public class PropertiesReader {
     public static String getProjectApiVersion() throws IOException, AssertionError {
         return PropertiesReader.getString(PROJECT_API_VERSION);
     }
+
     public static String getProjectAuthor() throws IOException, AssertionError {
         return PropertiesReader.getString(PROJECT_AUTHOR);
     }
+
     public static String getProjectVersion() throws IOException, AssertionError {
         return PropertiesReader.getString(PROJECT_VERSION);
     }
+
     public static String getProjectName() throws IOException, AssertionError {
         return PropertiesReader.getString(PROJECT_NAME);
     }
+
     public static String getProjectUrl() throws IOException, AssertionError {
         return PropertiesReader.getString(PROJECT_URL);
     }
+
     public static String getProjectDescription() throws IOException, AssertionError {
         return PropertiesReader.getString(PROJECT_DESCRIPTION);
     }
@@ -60,9 +64,11 @@ public class PropertiesReader {
     public static String getUpdateCheckerUrl() throws IOException, AssertionError {
         return PropertiesReader.getString(UPDATE_CHECKER_URL_KEY);
     }
+
     public static String getRegexpHost() throws IOException, AssertionError {
         return PropertiesReader.getString(REGEXP_HOST);
     }
+
     public static String getStorageSqLiteFilename() throws IOException, AssertionError {
         return PropertiesReader.getString(STORAGE_SQLITE_FILENAME);
     }
