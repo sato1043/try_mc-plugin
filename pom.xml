@@ -13,6 +13,23 @@
     <description>TestPlugin</description>
     <url>https://github.com/sato1043/try_mc-plugin</url>
 
+    <licenses>
+        <license>
+            <name>AGPL-3.0</name>
+            <url>https://opensource.org/licenses/AGPL-3.0</url>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/sato1043/try_mc-plugin/issues</url>
+    </issueManagement>
+
+    <scm>
+        <connection>scm:git:https://github.com/sato1043/try_mc-plugin.git</connection>
+        <url>https://github.com/sato1043/try_mc-plugin/</url>
+    </scm>
+
     <properties>
         <java.version>11</java.version>
 
