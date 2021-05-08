@@ -86,9 +86,34 @@
         </resources>
 
         <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
 
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <configuration>
+                        <propertiesEncoding>UTF-8</propertiesEncoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M3</version>
+                    <configuration>
+                        <rules>
+                            <DependencyConvergence/>
+                            <requireMavenVersion>
+                                <version>[3.1.0,4.0.0)</version>
+                            </requireMavenVersion>
+                        </rules>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -107,19 +132,38 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                                <classpathPrefix>libs</classpathPrefix>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M5</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-install-plugin</artifactId>
+                    <version>3.0.0-M1</version>
                     <configuration>
                         <skip>true</skip>
                     </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
+                    <version>3.9.1</version>
                     <configuration>
                         <skip>true</skip>
                     </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.0.0-M1</version>
                     <configuration>
                         <skip>true</skip>
                     </configuration>
@@ -128,6 +172,48 @@
         </pluginManagement>
 
         <plugins>
+            <!-- http://www.mojohaus.org/versions-maven-plugin/usage.html -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.8.1</version>
+                <executions>
+                    <execution>
+                        <id>display-plugin-updates</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>display-plugin-updates</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>display-dependency-updates</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>display-dependency-updates</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>display-property-updates</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>display-property-updates</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jdeps-plugin</artifactId>
+                <version>3.1.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jdkinternals</goal> <!-- verify main classes -->
+                            <goal>test-jdkinternals</goal> <!-- verify test classes -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- ビルド初期化時に properties ファイル読み込み -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -178,11 +264,18 @@
                 <version>3.1.2</version>
                 <configuration>
                     <includeScope>compile</includeScope>
+                    <outputDirectory>${project.build.outputDirectory}/libs</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
+                        <id>tree</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>tree</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>copy-dependencies</id>
-                        <phase>package</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
@@ -191,28 +284,78 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M3</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <phase>validate</phase>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>enforce</goal>
                         </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <minimizeJar>true</minimizeJar>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
-                <!-- scpでデプロイ -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <configuration>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <minimizeJar>false</minimizeJar>
+                    <artifactSet>
+                        <includes>
+                            <include>cc.updater.mc:*</include>
+                            <include>org.jetbrains:annotations</include>
+                        </includes>
+                    </artifactSet>
+                    <filters>
+                        <filter>
+                            <artifact>org.jetbrains:annotations</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.MF</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>create-uber-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>3.0.0</version>
                 <executions>
                     <execution>
+                        <id>echo-project-info</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo level="info">java.version = ${java.version}</echo>
+                                <echo level="info">java.vm.vendor = ${java.vm.vendor}</echo>
+                                <echo level="info">project.groupId = ${project.groupId}</echo>
+                                <echo level="info">project.artifactId = ${project.artifactId}</echo>
+                                <echo level="info">project.version = ${project.version}</echo>
+                                <echo level="info">project.basedir = ${project.basedir}</echo>
+                                <echo level="info">project.build.directory = ${project.build.directory}</echo>
+                                <echo level="info">project.build.outputDirectory = ${project.build.outputDirectory}
+                                </echo>
+                                <echo level="info">maven.build.timestamp = ${maven.build.timestamp}</echo>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>ssh-deploy</id>
                         <phase>deploy</phase>
                         <goals>
                             <goal>run</goal>
@@ -256,6 +399,25 @@
         </plugins>
     </build>
 
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.8.1</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>dependency-updates-report</report>
+                            <report>plugin-updates-report</report>
+                            <report>property-updates-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
     <repositories>
         <repository>
             <id>spigot-repo</id>
@@ -271,11 +433,11 @@
 
         <!-- https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope -->
 
-        <!-- compile time depedencies -->
+        <!-- compile time dependencies -->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>17.0.0</version>
+            <version>20.1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
