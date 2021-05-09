@@ -42,7 +42,36 @@
         <dependencies></dependencies>
         <soft-dependencies></soft-dependencies>
 
-        <deploy.local.jarfile>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</deploy.local.jarfile>
+        <deploy.libs.prefix>libs</deploy.libs.prefix>
+        <deploy.local.jarfile>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}
+        </deploy.local.jarfile>
+
+        <version.maven.clean>3.1.0</version.maven.clean>
+        <version.maven.resources>3.2.0</version.maven.resources>
+        <version.maven.enforcer>3.0.0-M3</version.maven.enforcer>
+        <version.maven.enforcer.min>3.1.0</version.maven.enforcer.min>
+        <version.maven.enforcer.over>4.0.0</version.maven.enforcer.over>
+        <version.maven.compiler>3.8.1</version.maven.compiler>
+        <version.maven.jar>3.2.0</version.maven.jar>
+        <version.maven.shade>3.2.4</version.maven.shade>
+        <version.maven.surefire>3.0.0-M5</version.maven.surefire>
+        <version.maven.install>3.0.0-M1</version.maven.install>
+        <version.maven.site>3.9.1</version.maven.site>
+        <version.maven.deploy>3.0.0-M1</version.maven.deploy>
+        <version.maven.javadoc>3.2.0</version.maven.javadoc>
+        <version.maven.jdeps>3.1.2</version.maven.jdeps>
+        <version.maven.dependency>3.1.2</version.maven.dependency>
+        <version.maven.antrun>3.0.0</version.maven.antrun>
+        <version.maven.antrun.jsch>0.1.55</version.maven.antrun.jsch>
+        <version.maven.antrun.ant-jsch>1.10.10</version.maven.antrun.ant-jsch>
+        <version.versions>2.8.1</version.versions>
+        <version.properties>1.0.0</version.properties>
+        <version.lombok>1.18.20</version.lombok>
+        <version.delombok>1.18.20.0</version.delombok>
+        <version.jetbrains.annotation>20.1.0</version.jetbrains.annotation>
+        <version.mysql.connector>8.0.24</version.mysql.connector>
+        <version.zaxxer.hikaricp>4.0.3</version.zaxxer.hikaricp>
+        <version.spigotmc.spigot-api>1.16.5-R0.1-SNAPSHOT</version.spigotmc.spigot-api>
     </properties>
 
     <profiles>
@@ -92,11 +121,11 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>${version.maven.clean}</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>${version.maven.resources}</version>
                     <configuration>
                         <propertiesEncoding>UTF-8</propertiesEncoding>
                     </configuration>
@@ -104,12 +133,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.0.0-M3</version>
+                    <version>${version.maven.enforcer}</version>
                     <configuration>
                         <rules>
                             <DependencyConvergence/>
                             <requireMavenVersion>
-                                <version>[3.1.0,4.0.0)</version>
+                                <version>[${version.maven.enforcer.min},${version.maven.enforcer.over})</version>
                             </requireMavenVersion>
                         </rules>
                     </configuration>
@@ -117,7 +146,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>${version.maven.compiler}</version>
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
@@ -126,44 +155,44 @@
                             <path>
                                 <groupId>org.projectlombok</groupId>
                                 <artifactId>lombok</artifactId>
-                                <version>1.18.20</version>
+                                <version>${version.lombok}</version>
                             </path>
                         </annotationProcessorPaths>
                     </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>${version.maven.jar}</version>
                     <configuration>
                         <archive>
                             <manifest>
                                 <addClasspath>true</addClasspath>
-                                <classpathPrefix>libs</classpathPrefix>
+                                <classpathPrefix>${deploy.libs.prefix}</classpathPrefix>
                             </manifest>
                         </archive>
                     </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M5</version>
+                    <version>${version.maven.surefire}</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>3.0.0-M1</version>
+                    <version>${version.maven.install}</version>
                     <configuration>
                         <skip>true</skip>
                     </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.9.1</version>
+                    <version>${version.maven.site}</version>
                     <configuration>
                         <skip>true</skip>
                     </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.0.0-M1</version>
+                    <version>${version.maven.deploy}</version>
                     <configuration>
                         <skip>true</skip>
                     </configuration>
@@ -176,7 +205,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.8.1</version>
+                <version>${version.versions}</version>
                 <executions>
                     <execution>
                         <id>display-plugin-updates</id>
@@ -204,7 +233,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jdeps-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>${version.maven.jdeps}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -218,7 +247,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>${version.properties}</version>
                 <executions>
                     <execution>
                         <id>import-profile-properties</id>
@@ -248,7 +277,7 @@
             <!-- plugin>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok-maven-plugin</artifactId>
-                <version>1.18.20.0</version>
+                <version>${version.delombok}</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
@@ -261,10 +290,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>${version.maven.dependency}</version>
                 <configuration>
                     <includeScope>compile</includeScope>
-                    <outputDirectory>${project.build.outputDirectory}/libs</outputDirectory>
+                    <outputDirectory>${project.build.outputDirectory}/${deploy.libs.prefix}</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
@@ -285,7 +314,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M3</version>
+                <version>${version.maven.enforcer}</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -295,10 +324,23 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${version.maven.javadoc}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>${version.maven.shade}</version>
                 <configuration>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
@@ -309,11 +351,26 @@
                             <include>org.jetbrains:annotations</include>
                         </includes>
                     </artifactSet>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.jetbrains</pattern>
+                            <shadedPattern>cc.updater.mc.libs.jetbrains</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.intellij</pattern>
+                            <shadedPattern>cc.updater.mc.libs.intellij</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.zaxxer.hikari</pattern>
+                            <shadedPattern>cc.updater.mc.libs.hikari</shadedPattern>
+                        </relocation>
+                    </relocations>
                     <filters>
                         <filter>
-                            <artifact>org.jetbrains:annotations</artifact>
+                            <artifact>*:*</artifact>
                             <excludes>
-                                <exclude>META-INF/*.MF</exclude>
+                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                <exclude>META-INF/**</exclude>
                             </excludes>
                         </filter>
                     </filters>
@@ -331,7 +388,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>${version.maven.antrun}</version>
                 <executions>
                     <execution>
                         <id>echo-project-info</id>
@@ -387,12 +444,12 @@
                     <dependency>
                         <groupId>com.jcraft</groupId>
                         <artifactId>jsch</artifactId>
-                        <version>0.1.55</version>
+                        <version>${version.maven.antrun.jsch}</version>
                     </dependency>
                     <dependency>
                         <groupId>org.apache.ant</groupId>
                         <artifactId>ant-jsch</artifactId>
-                        <version>1.10.10</version>
+                        <version>${version.maven.antrun.ant-jsch}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -404,7 +461,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.8.1</version>
+                <version>${version.versions}</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -437,19 +494,19 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>20.1.0</version>
+            <version>${version.jetbrains.annotation}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.24</version>
+            <version>${version.mysql.connector}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>4.0.3</version>
+            <version>${version.zaxxer.hikaricp}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -457,13 +514,13 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <version>${version.spigotmc.spigot-api}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>${version.lombok}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
