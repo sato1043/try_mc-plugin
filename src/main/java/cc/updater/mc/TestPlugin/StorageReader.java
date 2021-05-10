@@ -80,7 +80,7 @@ public class StorageReader {
                 "jdbc:sqlite:"
                         + plugin.getDataFolder().getAbsolutePath()
                         + File.separator
-                        + PropertiesReader.getStorageSqLiteFilename()
+                        + Constants.STORAGE_SQLITE_FILENAME
         );
 
         config.setConnectionTestQuery("SELECT 1;");
@@ -157,7 +157,7 @@ public class StorageReader {
     private void open() throws AssertionError, IOException, SQLException {
 
         var config = getPoolConfig();
-        config.setPoolName(PropertiesReader.getProjectName() + "-Connection-Pool");
+        config.setPoolName(Constants.PROJECT_NAME + "-Connection-Pool");
         config.addDataSourceProperty("useUnicode", "true");
         config.addDataSourceProperty("characterEncoding", "utf-8");
         config.addDataSourceProperty("cachePrepStmts", "true");

@@ -66,6 +66,8 @@
         <version.maven.antrun.ant-jsch>1.10.10</version.maven.antrun.ant-jsch>
         <version.versions>2.8.1</version.versions>
         <version.properties>1.0.0</version.properties>
+        <version.templating>1.0.0</version.templating>
+        <version.guava>21.0</version.guava>
         <version.lombok>1.18.20</version.lombok>
         <version.delombok>1.18.20.0</version.delombok>
         <version.jetbrains.annotation>20.1.0</version.jetbrains.annotation>
@@ -273,6 +275,24 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>templating-maven-plugin</artifactId>
+                <version>${version.templating}</version>
+                <executions>
+                    <execution>
+                        <id>filter-src</id>
+                        <goals>
+                            <goal>filter-sources</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${basedir}/src/main/java-templates</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/generated-sources/java-templates
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- http://anthonywhitford.com/lombok.maven/lombok-maven-plugin/ -->
             <!-- plugin>
                 <groupId>org.projectlombok</groupId>
@@ -344,11 +364,12 @@
                 <configuration>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
-                    <minimizeJar>false</minimizeJar>
+                    <minimizeJar>true</minimizeJar>
                     <artifactSet>
                         <includes>
-                            <include>cc.updater.mc:*</include>
+                            <include>${project.groupId}:${project.artifactId}</include>
                             <include>org.jetbrains:annotations</include>
+                            <include>com.google.guava:guava</include>
                         </includes>
                     </artifactSet>
                     <relocations>
@@ -359,6 +380,10 @@
                         <relocation>
                             <pattern>org.intellij</pattern>
                             <shadedPattern>cc.updater.mc.libs.intellij</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.google.guava</pattern>
+                            <shadedPattern>cc.updater.mc.libs.guava</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.zaxxer.hikari</pattern>
@@ -495,6 +520,12 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>${version.jetbrains.annotation}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${version.guava}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
