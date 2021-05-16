@@ -24,7 +24,7 @@ public class UpdateChecker {
     public void getVersion(final Consumer<String> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), () -> {
             try {
-                try (var is = new URL(Constants.UPDATE_CHECKER_URL).openStream();
+                try (var is = new URL(D.UPDATE_CHECKER_URL).openStream();
                      var scanner = new Scanner(is)) {
                     if (scanner.hasNext()) {
                         consumer.accept(scanner.next());

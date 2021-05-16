@@ -68,7 +68,9 @@ public class StorageReader {
     public static StorageReader createStorageBySQLite(JavaPlugin plugin)
             throws AssertionError, ClassNotFoundException, IOException, SQLException {
 
-        Class.forName("org.sqlite.JDBC");
+        new LibraryDownloader(plugin)
+                .downloadHikariCP()
+                .downloadSqlite();
 
         var storage = new StorageReader();
 
@@ -80,7 +82,7 @@ public class StorageReader {
                 "jdbc:sqlite:"
                         + plugin.getDataFolder().getAbsolutePath()
                         + File.separator
-                        + Constants.STORAGE_SQLITE_FILENAME
+                        + D.STORAGE_SQLITE_FILENAME
         );
 
         config.setConnectionTestQuery("SELECT 1;");
@@ -94,7 +96,9 @@ public class StorageReader {
     public static StorageReader createStorageByMySQL(JavaPlugin plugin)
             throws AssertionError, ClassNotFoundException, IOException, SQLException {
 
-        Class.forName("com.mysql.jdbc");
+        new LibraryDownloader(plugin)
+                .downloadHikariCP()
+                .downloadMySQL();
 
         var storage = new StorageReader();
 
@@ -157,7 +161,7 @@ public class StorageReader {
     private void open() throws AssertionError, IOException, SQLException {
 
         var config = getPoolConfig();
-        config.setPoolName(Constants.PROJECT_NAME + "-Connection-Pool");
+        config.setPoolName(D.PROJECT_NAME + "-Connection-Pool");
         config.addDataSourceProperty("useUnicode", "true");
         config.addDataSourceProperty("characterEncoding", "utf-8");
         config.addDataSourceProperty("cachePrepStmts", "true");
