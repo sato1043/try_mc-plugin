@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cc.updater.mc</groupId>
-    <artifactId>TestPlugin</artifactId>
+    <artifactId>testplugin</artifactId>
+    <name>TestPlugin</name>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>TestPlugin</name>
     <description>TestPlugin</description>
     <url>https://github.com/sato1043/try_mc-plugin</url>
 
@@ -38,14 +38,14 @@
 
         <project.author>sato1043</project.author>
         <project.api.version>1.16</project.api.version>
-        <project.main>${project.groupId}.${project.artifactId}.${project.artifactId}</project.main>
+        <project.main>${project.groupId}.${project.artifactId}.${project.name}</project.main>
         <dependencies></dependencies>
         <soft-dependencies></soft-dependencies>
 
+        <deploy.finalName>${project.name}-${project.version}</deploy.finalName>
         <deploy.libs.add-classpath>false</deploy.libs.add-classpath>
         <deploy.libs.prefix>libs</deploy.libs.prefix>
-        <deploy.local.jarfile>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}
-        </deploy.local.jarfile>
+        <deploy.local.jarfile>${project.build.directory}/${deploy.finalName}.${project.packaging}</deploy.local.jarfile>
 
         <repository.spigotmc-repo>https://hub.spigotmc.org/nexus/content/repositories/snapshots/
         </repository.spigotmc-repo>
@@ -211,6 +211,7 @@
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>${version.maven.jar}</version>
                     <configuration>
+                        <finalName>${deploy.finalName}</finalName>
                         <archive>
                             <manifest>
                                 <addClasspath>${deploy.libs.add-classpath}</addClasspath>

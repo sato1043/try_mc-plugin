@@ -1,4 +1,4 @@
-package cc.updater.mc.TestPlugin;
+package cc.updater.mc.testplugin;
 
 import lombok.AccessLevel;
 import lombok.Getter;
