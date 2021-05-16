@@ -2,6 +2,10 @@ package cc.updater.mc.testplugin;
 
 import com.google.common.base.Strings;
 
+/**
+ * Defining static constants.
+ */
+@SuppressWarnings("checkstyle:LineLength")
 public class D {
     public static final String PROJECT_GROUP_ID = "${project.groupId}";
     public static final String PROJECT_ARTIFACT_ID = "${project.artifactId}";

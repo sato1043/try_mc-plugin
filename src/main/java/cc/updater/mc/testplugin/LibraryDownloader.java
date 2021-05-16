@@ -10,6 +10,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 
+/**
+ * Downloads jar files and relocate them.
+ */
 public class LibraryDownloader {
 
     @Getter
@@ -18,6 +21,12 @@ public class LibraryDownloader {
     @Getter
     private final BukkitLibraryManager libraryManager;
 
+    /**
+     * Creates a LibraryDownloader.
+     *
+     * @param plugin_ JavaPlugin to apply to BukkitLibraryManager
+     * @throws NullPointerException causes when plugin_ is null.
+     */
     public LibraryDownloader(@NonNull JavaPlugin plugin_) throws NullPointerException {
         plugin = plugin_;
         libraryManager = new BukkitLibraryManager(plugin);
@@ -27,11 +36,24 @@ public class LibraryDownloader {
         libraryManager.addRepository(D.REPOSITORY_SONATYPE);
     }
 
-    private String getRelocatedPackageName(@NonNull String originalPackageName) throws NullPointerException {
+    private String getRelocatedPackageName(@NonNull String originalPackageName)
+            throws NullPointerException {
         return D.PROJECT_GROUP_ID + ".libs." + originalPackageName;
     }
 
-    public LibraryDownloader download(String groupId, String artifactId, String version, String checkSum, String... relocations)
+    /**
+     * Downloads jar files and relocate them.
+     *
+     * @param groupId     to download.
+     * @param artifactId  to download.
+     * @param version     to download.
+     * @param checkSum    to download.
+     * @param relocations to download.
+     * @return Instance of itself.
+     * @throws AssertionError causes when one or more of params is null or empty.
+     */
+    public LibraryDownloader download(String groupId, String artifactId,
+                                      String version, String checkSum, String... relocations)
             throws AssertionError {
 
         assert !Strings.isNullOrEmpty(groupId);
@@ -59,26 +81,46 @@ public class LibraryDownloader {
         return this;
     }
 
-    public LibraryDownloader downloadHikariCP() throws ClassNotFoundException {
-        download("com.zaxxer", "HikariCP", D.VERSION_JDBC_HIKARICP, D.VERSION_JDBC_HIKARICP_CHECKSUM,
+    /**
+     * Downloads Hikari Connection Pool.
+     *
+     * @return Instance of itself.
+     * @throws ClassNotFoundException causes when downloaded class can not found.
+     */
+    public LibraryDownloader downloadHikariCp() throws ClassNotFoundException {
+        download("com.zaxxer", "HikariCP",
+                D.VERSION_JDBC_HIKARICP, D.VERSION_JDBC_HIKARICP_CHECKSUM,
                 D.VERSION_JDBC_HIKARICP_PACKAGENAME);
-// TODO
-//        Class.forName(getRelocatedPackageName(D.VERSION_JDBC_HIKARICP_PACKAGENAME) + ".HikariConfig");
-//        Class.forName("com.zaxxer.hikari.HikariConfig");
+        // TODO
+        // Class.forName(getRelocatedPackageName(D.VERSION_JDBC_HIKARICP_PACKAGENAME) + ".HikariConfig");
+        // Class.forName("com.zaxxer.hikari.HikariConfig");
         return this;
     }
 
-    public LibraryDownloader downloadMySQL() throws ClassNotFoundException {
-        download("mysql", "mysql-connector-java", D.VERSION_JDBC_MYSQL, D.VERSION_JDBC_MYSQL_CHECKSUM,
+    /**
+     * Downloads MySQL connector.
+     *
+     * @return Instance of itself.
+     * @throws ClassNotFoundException causes when downloaded class can not found.
+     */
+    public LibraryDownloader downloadMySql() throws ClassNotFoundException {
+        download("mysql", "mysql-connector-java",
+                D.VERSION_JDBC_MYSQL, D.VERSION_JDBC_MYSQL_CHECKSUM,
                 D.VERSION_JDBC_MYSQL_PACKAGENAME, "com.google.protobuf");
-//        Class.forName(getRelocatedPackageName(D.VERSION_JDBC_MYSQL_PACKAGENAME));
+        // Class.forName(getRelocatedPackageName(D.VERSION_JDBC_MYSQL_PACKAGENAME));
         return this;
     }
 
+    /**
+     * Downloads SQLite driver.
+     *
+     * @return Instance of itself.
+     * @throws ClassNotFoundException causes when downloaded class can not found.
+     */
     public LibraryDownloader downloadSqlite() throws ClassNotFoundException {
         download("org.xerial", "sqlite-jdbc", D.VERSION_JDBC_SQLITE, D.VERSION_JDBC_SQLITE_CHECKSUM,
                 D.VERSION_JDBC_SQLITE_PACKAGENAME);
-//        Class.forName(getRelocatedPackageName(D.VERSION_JDBC_SQLITE_PACKAGENAME));
+        // Class.forName(getRelocatedPackageName(D.VERSION_JDBC_SQLITE_PACKAGENAME));
         return this;
     }
 

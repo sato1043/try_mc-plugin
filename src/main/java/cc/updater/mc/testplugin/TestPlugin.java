@@ -13,6 +13,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 
+/**
+ * Starts TestPlugin.
+ */
 public final class TestPlugin extends JavaPlugin implements Listener {
 
     @Getter(AccessLevel.PRIVATE)
@@ -54,8 +57,9 @@ public final class TestPlugin extends JavaPlugin implements Listener {
     }
 
     private void checkUpdate() throws IOException, AssertionError {
-        if (!getConfig().getBoolean("checkUpdate")) return;
-
+        if (!getConfig().getBoolean("checkUpdate")) {
+            return;
+        }
         try {
             new UpdateChecker(this).getVersion(version -> {
                 if (!this.getDescription().getVersion().equalsIgnoreCase(version)) {

@@ -4,4 +4,5 @@
         "http://checkstyle.sourceforge.net/dtds/suppressions_1_1.dtd">
 
 <suppressions>
+    <!--<suppress checks="LineLength" files=".*/D.java" />-->
 </suppressions>

@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Scanner;
 
+/**
+ * Checks plugin update.
+ */
 public class UpdateChecker {
 
     @Getter
@@ -21,6 +24,11 @@ public class UpdateChecker {
         setPlugin(plugin);
     }
 
+    /**
+     * Gets version string from spigot-mc.
+     *
+     * @param consumer
+     */
     public void getVersion(final Consumer<String> consumer) {
         Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), () -> {
             try {

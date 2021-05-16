@@ -12,9 +12,17 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Manage storage sessions.
+ */
 public class StorageReader {
 
-    public enum StorageType {SQLITE, MYSQL}
+    /**
+     * Enum for Storage Type.
+     */
+    public enum StorageType {
+        SQLITE, MYSQL
+    }
 
     @Getter
     @Setter(AccessLevel.PRIVATE)
@@ -51,25 +59,46 @@ public class StorageReader {
     private HikariDataSource dataSource = null;
 
 
+    /**
+     * Creates StorageReader.
+     *
+     * @param plugin to apply to StorageReader.
+     * @return Instance of StorageReader.
+     * @throws AssertionError         causes when one of params is null.
+     * @throws ClassNotFoundException causes when JDBC can not autoload.
+     * @throws IOException
+     * @throws SQLException
+     */
     public static StorageReader createStorage(JavaPlugin plugin)
             throws AssertionError, ClassNotFoundException, IOException, SQLException {
         var type = plugin.getConfig().getString("storage.type");
         assert type != null && !type.isBlank();
         switch (type.trim().toLowerCase()) {
             case "sqlite":
-                return createStorageBySQLite(plugin);
+                return createStorageBySqlite(plugin);
             case "mysql":
-                return createStorageByMySQL(plugin);
+                return createStorageByMysql(plugin);
+            default:
+                assert false;
         }
-        assert false;
         return null;
     }
 
-    public static StorageReader createStorageBySQLite(JavaPlugin plugin)
+    /**
+     * Creates StorageReader of SQLite.
+     *
+     * @param plugin to apply to StorageReader.
+     * @return Instance of StorageReader.
+     * @throws AssertionError         causes when one of params is null.
+     * @throws ClassNotFoundException causes when JDBC can not autoload.
+     * @throws IOException
+     * @throws SQLException
+     */
+    public static StorageReader createStorageBySqlite(JavaPlugin plugin)
             throws AssertionError, ClassNotFoundException, IOException, SQLException {
 
         new LibraryDownloader(plugin)
-                .downloadHikariCP()
+                .downloadHikariCp()
                 .downloadSqlite();
 
         var storage = new StorageReader();
@@ -93,18 +122,26 @@ public class StorageReader {
         return storage;
     }
 
-    public static StorageReader createStorageByMySQL(JavaPlugin plugin)
+    /**
+     * Creates StorageReader of MySQL.
+     *
+     * @param plugin to apply to StorageReader.
+     * @return Instance of StorageReader.
+     * @throws AssertionError         causes when one of params is null.
+     * @throws ClassNotFoundException causes when JDBC can not autoload.
+     * @throws IOException
+     * @throws SQLException
+     */
+    public static StorageReader createStorageByMysql(JavaPlugin plugin)
             throws AssertionError, ClassNotFoundException, IOException, SQLException {
 
         new LibraryDownloader(plugin)
-                .downloadHikariCP()
-                .downloadMySQL();
+                .downloadHikariCp()
+                .downloadMySql();
 
         var storage = new StorageReader();
 
         storage.setType(StorageType.MYSQL);
-
-        var config = storage.getPoolConfig();
 
         var mysqlHost = plugin.getConfig().getString("storage.mysql.host");
         assert mysqlHost != null && !mysqlHost.isBlank();
@@ -137,11 +174,13 @@ public class StorageReader {
         storage.setMysqlMaxConns(mysqlMaxConns);
         storage.setMysqlUseSsl(mysqlUseSsl);
 
+        var config = storage.getPoolConfig();
+
         config.setJdbcUrl(
-                "jdbc:mysql://" + mysqlHost + ":" + mysqlPort + "/" + mysqlDbName +
-                        "?allowMultiQueries=true" +
-                        "&autoReconnect=true" +
-                        "&useSSL=" + (mysqlUseSsl ? "true" : "false")
+                "jdbc:mysql://" + mysqlHost + ":" + mysqlPort + "/" + mysqlDbName
+                        + "?allowMultiQueries=true"
+                        + "&autoReconnect=true"
+                        + "&useSSL=" + (mysqlUseSsl ? "true" : "false")
         );
 
         config.setUsername(mysqlUser);
