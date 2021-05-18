@@ -81,6 +81,10 @@
         <version.jetbrains.annotation>20.1.0</version.jetbrains.annotation>
         <version.spigotmc.spigot-api>1.16.5-R0.1-SNAPSHOT</version.spigotmc.spigot-api>
 
+        <version.slf4j>2.0.0-alpha1</version.slf4j>
+        <version.reflections>0.9.12</version.reflections>
+        <version.reflections.packageName>org.reflections</version.reflections.packageName>
+        <version.reflections.checksum>0Wj1jTLyrnrFqNXZCSre7lJsYEtBEl3LRe6od5YKmc8=</version.reflections.checksum>
         <version.jdbc.hikaricp>4.0.3</version.jdbc.hikaricp>
         <version.jdbc.hikaricp.packageName>com.zaxxer.hikari</version.jdbc.hikaricp.packageName>
         <version.jdbc.hikaricp.checksum>fAJK7/HBBjV210RTUT+d5kR9jmJNF/jifzCi6XaIxsk=</version.jdbc.hikaricp.checksum>
@@ -426,7 +430,8 @@
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <shadedClassifierName>shaded</shadedClassifierName>
                     -->
-                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <createDependencyReducedPom>true</createDependencyReducedPom>
+                    <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
                     <minimizeJar>true</minimizeJar>
                     <transformers>
                         <transformer
@@ -677,10 +682,28 @@
         </dependency>
 
         <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>${version.reflections}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>${version.jdbc.hikaricp}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${version.slf4j}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${version.slf4j}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>

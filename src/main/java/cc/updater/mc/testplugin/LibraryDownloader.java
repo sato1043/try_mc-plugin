@@ -16,24 +16,31 @@ import java.util.Arrays;
 public class LibraryDownloader {
 
     @Getter
-    private final JavaPlugin plugin;
-
-    @Getter
     private final BukkitLibraryManager libraryManager;
 
     /**
-     * Creates a LibraryDownloader.
+     * Creates LibraryDownloader.
      *
-     * @param plugin_ JavaPlugin to apply to BukkitLibraryManager
+     * @param plugin JavaPlugin to apply to BukkitLibraryManager
+     * @return Instance of LibraryDownloader
      * @throws NullPointerException causes when plugin_ is null.
      */
-    public LibraryDownloader(@NonNull JavaPlugin plugin_) throws NullPointerException {
-        plugin = plugin_;
+    public static LibraryDownloader create(@NonNull JavaPlugin plugin) throws NullPointerException {
+        return new LibraryDownloader(plugin);
+    }
+
+    private LibraryDownloader(@NonNull JavaPlugin plugin) throws NullPointerException {
         libraryManager = new BukkitLibraryManager(plugin);
         libraryManager.setLogLevel(LogLevel.DEBUG);
         libraryManager.addMavenCentral();
         libraryManager.addRepository(D.REPOSITORY_SPIGOT_REPO);
         libraryManager.addRepository(D.REPOSITORY_SONATYPE);
+
+        ClassLoader cl = StorageReader.class.getClassLoader();
+        while (cl != null) {
+            plugin.getLogger().info(cl.getClass().getName());
+            cl = cl.getParent();
+        }
     }
 
     private String getRelocatedPackageName(@NonNull String originalPackageName)
@@ -53,7 +60,8 @@ public class LibraryDownloader {
      * @throws AssertionError causes when one or more of params is null or empty.
      */
     public LibraryDownloader download(String groupId, String artifactId,
-                                      String version, String checkSum, String... relocations)
+                                      String version, String checkSum,
+                                      String... relocations)
             throws AssertionError {
 
         assert !Strings.isNullOrEmpty(groupId);
@@ -74,10 +82,26 @@ public class LibraryDownloader {
                 .checksum(checkSum);
 
         for (var originalPackageName : relocations) {
-            builder.relocate(originalPackageName, getRelocatedPackageName(originalPackageName));
+            builder.relocate(originalPackageName.replaceAll("[.]", "{}"),
+                    getRelocatedPackageName(originalPackageName).replaceAll("[.]", "{}"));
         }
 
         libraryManager.loadLibrary(builder.build());
+        return this;
+    }
+
+    /**
+     * Downloads Reflections.
+     *
+     * @return Instance of itself.
+     * @throws ClassNotFoundException causes when downloaded class can not found.
+     */
+    public LibraryDownloader downloadReflections() throws ClassNotFoundException {
+        download("org.reflections", "reflections",
+                D.VERSION_REFLECTIONS, D.VERSION_REFLECTIONS_CHECKSUM,
+                D.VERSION_REFLECTIONS_PACKAGENAME);
+        // TODO
+        // Class.forName("");
         return this;
     }
 
@@ -90,7 +114,9 @@ public class LibraryDownloader {
     public LibraryDownloader downloadHikariCp() throws ClassNotFoundException {
         download("com.zaxxer", "HikariCP",
                 D.VERSION_JDBC_HIKARICP, D.VERSION_JDBC_HIKARICP_CHECKSUM,
-                D.VERSION_JDBC_HIKARICP_PACKAGENAME);
+                D.VERSION_JDBC_HIKARICP_PACKAGENAME,
+                "org.slf4j"
+        );
         // TODO
         // Class.forName(getRelocatedPackageName(D.VERSION_JDBC_HIKARICP_PACKAGENAME) + ".HikariConfig");
         // Class.forName("com.zaxxer.hikari.HikariConfig");

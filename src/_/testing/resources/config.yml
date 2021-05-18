@@ -25,7 +25,10 @@ storage:
     user: ${storage.mysql.user}
     password: ${storage.mysql.password}
     db_name: ${storage.mysql.db_name}
+    table_prefix: ${storage.mysql.table_prefix}
+    conn_timeout_ms: ${storage.mysql.conn_timeout_ms}
     max_conns: ${storage.mysql.max_conns}
+    max_lifetime_ms: ${storage.mysql.max_lifetime_ms}
     use_ssl: ${storage.mysql.use_ssl}
 
 #__END__

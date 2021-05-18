@@ -29,6 +29,9 @@ public class D {
 
     public static final String VERSION_SPIGOTMC_SPIGOT_API = "${version.spigotmc.spigot-api}";
 
+    public static final String VERSION_REFLECTIONS = "${version.reflections}";
+    public static final String VERSION_REFLECTIONS_PACKAGENAME = "${version.reflections.packageName}";
+    public static final String VERSION_REFLECTIONS_CHECKSUM = "${version.reflections.checksum}";
     public static final String VERSION_JDBC_HIKARICP = "${version.jdbc.hikaricp}";
     public static final String VERSION_JDBC_HIKARICP_PACKAGENAME = "${version.jdbc.hikaricp.packageName}";
     public static final String VERSION_JDBC_HIKARICP_CHECKSUM = "${version.jdbc.hikaricp.checksum}";
@@ -61,6 +64,10 @@ public class D {
         assert !Strings.isNullOrEmpty(REPOSITORY_SONATYPE);
 
         assert !Strings.isNullOrEmpty(VERSION_SPIGOTMC_SPIGOT_API);
+
+        assert !Strings.isNullOrEmpty(VERSION_REFLECTIONS);
+        assert !Strings.isNullOrEmpty(VERSION_REFLECTIONS_PACKAGENAME);
+        assert !Strings.isNullOrEmpty(VERSION_REFLECTIONS_CHECKSUM);
 
         assert !Strings.isNullOrEmpty(VERSION_JDBC_HIKARICP);
         assert !Strings.isNullOrEmpty(VERSION_JDBC_HIKARICP_PACKAGENAME);

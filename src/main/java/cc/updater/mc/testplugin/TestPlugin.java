@@ -22,7 +22,11 @@ public final class TestPlugin extends JavaPlugin implements Listener {
     @Setter(AccessLevel.PRIVATE)
     private static TestPlugin instance = null;
 
-    @Getter(AccessLevel.PRIVATE)
+    @Getter(AccessLevel.PACKAGE)
+    @Setter(AccessLevel.PRIVATE)
+    private LibraryDownloader libraryDownloader = null;
+
+    @Getter(AccessLevel.PACKAGE)
     @Setter(AccessLevel.PRIVATE)
     private StorageReader storage = null;
 
@@ -43,7 +47,9 @@ public final class TestPlugin extends JavaPlugin implements Listener {
 
             validateConfig();
 
-            setStorage(StorageReader.createStorage(this));
+            setLibraryDownloader(LibraryDownloader.create(this));
+
+            setStorage(StorageReader.create(this));
 
             getServer().getPluginManager().registerEvents(this, this);
 
